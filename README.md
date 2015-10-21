@@ -34,5 +34,16 @@ I'm trying with this project to solve these issues by using new tools and techno
 
 ## Getting Started
 
-Coming soon
+### Requirements 
+
+- Vitrual box
+
+### Install
+
+Run the command below to install all the necessary docker tools :
+
+```
+$ ./install.sh
+```
+
 
