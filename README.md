@@ -43,7 +43,7 @@ I'm trying with this project to solve these issues by using new tools and techno
 Run the command below to install all the necessary docker tools :
 
 ```
-$ curl -sSL https://raw.githubusercontent.com/pointcom/docker-local-dev/master/install.sh | sh
+$ sh <(curl https://raw.githubusercontent.com/pointcom/docker-local-dev/master/install.sh -sSL)
 ```
 
 The command above will install `docker client`, `docker-machine` and `docker-compose`. It will also create a `dev` docker machine instance (Virtual Box) and configure this instance to use `NFS` as default file sync strategy, instead of `vboxfs`.
