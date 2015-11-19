@@ -47,7 +47,7 @@ if [ $create_docker_machine = "y" ];then
   eval "$(docker-machine env dev)"
 
   # Find a better way to retrieve the curent ip
-  ip=$(ifconfig | grep en2 -A1 | grep "inet " | awk '{print $2}')
+  ip=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1)
 
 
   grep -q DOCKER-LOCAL-BEGIN /etc/exports
