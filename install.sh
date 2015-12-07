@@ -3,7 +3,7 @@
 # All binaries are installed in /usr/local/bin/ directory.
 
 DOCKER_VERSION="1.9.1"
-DOCKER_MACHINE_VERSION="0.5.1"
+DOCKER_MACHINE_VERSION="0.5.2"
 #DOCKER_COMPOSE_VERSION="1.5.0rc1"
 
 RED='\033[0;31m'
