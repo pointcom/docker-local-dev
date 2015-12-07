@@ -36,7 +36,8 @@ I'm trying with this project to solve these issues by using new tools and techno
 
 ### Requirements 
 
-- Vitrual box
+- OSX
+- VirtualBox (5.0.10 or higher)
 
 ### Install
 
