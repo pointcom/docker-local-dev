@@ -59,10 +59,10 @@ do_create_machine() {
 
     echo "\n${GREEN}>> Config NFS server on your local machine${NC}"
     nfsexports=$(cat <<EOF
-    # DOCKER-LOCAL-BEGIN
-    /Users {{IP}} -alldirs -mapall=0:80
-    # DOCKER-LOCAL-END
-    EOF)
+# DOCKER-LOCAL-BEGIN
+/Users {{IP}} -alldirs -mapall=0:80
+# DOCKER-LOCAL-END
+EOF)
     nfsexports=$(echo "$nfsexports" | sed -e "s/{{IP}}/$ip/g")
     echo "$nfsexports" | sudo tee -a /etc/exports
     sudo nfsd restart
@@ -70,12 +70,12 @@ do_create_machine() {
 
   echo "\n${GREEN}>> Config NFS client on the dev machine${NC}"
   bootsync=$(cat <<EOF
-  #!/bin/sh
-  sudo umount /Users
-  sudo /usr/local/etc/init.d/nfs-client start
-  sleep 1
-  sudo mount.nfs {{IP}}:/Users /Users -v -o rw,async,noatime,rsize=32768,wsize=32768,proto=udp,udp,nfsvers=3
-  EOF)
+#!/bin/sh
+sudo umount /Users
+sudo /usr/local/etc/init.d/nfs-client start
+sleep 1
+sudo mount.nfs {{IP}}:/Users /Users -v -o rw,async,noatime,rsize=32768,wsize=32768,proto=udp,udp,nfsvers=3
+EOF)
 
   bootsync=$(echo "$bootsync" | sed -e "s/{{IP}}/$ip/g")
 
