@@ -48,16 +48,18 @@ do_create_machine() {
   # Create a Docker machine on virtualbox
   echo "\n${GREEN}>> Create a dev machine on virtualbox${NC}"
   docker-machine create --driver virtualbox dev
-  eval "$(docker-machine env dev)"
+}
 
-  # Find a better way to retrieve the curent ip
-  ip=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1)
+do_configure_nfs() {
+  ip=$(docker-machine ip dev)
 
+  vboxnet_name=$(VBoxManage showvminfo dev --machinereadable | grep hostonlyadapter | cut -d= -f2 | sed -e 's/"//g')
+  vboxnet_ip=$(VBoxManage list hostonlyifs|grep -A3 "Name: *$vboxnet_name" | tail -n1|cut -d: -f2|tr -d '[[:space:]]')
 
   grep -q DOCKER-LOCAL-BEGIN /etc/exports
   if [ $? -eq 1 ]; then
 
-    echo "\n${GREEN}>> Config NFS server on your local machine${NC}"
+    echo "\n${GREEN}>> Config NFS server on your local machine (need root access)${NC}"
     nfsexports=$(cat <<EOF
 # DOCKER-LOCAL-BEGIN
 /Users {{IP}} -alldirs -mapall=0:80
@@ -77,14 +79,11 @@ sleep 1
 sudo mount.nfs {{IP}}:/Users /Users -v -o rw,async,noatime,rsize=32768,wsize=32768,proto=udp,udp,nfsvers=3
 EOF)
 
-  bootsync=$(echo "$bootsync" | sed -e "s/{{IP}}/$ip/g")
+  bootsync=$(echo "$bootsync" | sed -e "s/{{IP}}/$vboxnet_ip/g")
 
   docker-machine ssh dev "echo \"$bootsync\" > /tmp/bootsync.sh"
   docker-machine ssh dev "sudo mv /tmp/bootsync.sh /var/lib/boot2docker/bootsync.sh"
   docker-machine restart dev
-
-  echo "\n\n${GREEN}Done! You should see infos about docker below :${NC}"
-  docker $(docker-machine config dev) info
 }
 
 read -p "Do you want to install docker, docker-machine and docker-compose? (y/n)" answer
@@ -102,6 +101,8 @@ read -p "Do you want to create a new machine? (y/n)" answer
 case ${answer:0:1} in
   y|Y )
     do_create_machine
+    do_configure_nfs
+    echo "\n\n${GREEN}Done! To see how to connect Docker to this machine, run: docker-machine env dev${NC}"
     ;;
   * )
     exit
