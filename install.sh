@@ -3,7 +3,7 @@
 # All binaries are installed in /usr/local/bin/ directory.
 
 DOCKER_VERSION="1.9.1"
-DOCKER_MACHINE_VERSION="0.5.2"
+DOCKER_MACHINE_VERSION="0.5.4"
 #DOCKER_COMPOSE_VERSION="1.5.0rc1"
 
 RED='\033[0;31m'
@@ -25,13 +25,11 @@ do_install() {
 
 
   # Install Docker machine
-  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine_$(echo $os| tr '[:upper:]' '[:lower:]')-amd64.zip"
+  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine_$(echo $os| tr '[:upper:]' '[:lower:]')-amd64"
   echo "\n${GREEN}>> Download Docker machine ($DOCKER_MACHINE_VERSION)${NC}"
   echo $docker_machine_bin_url
-  curl -L $docker_machine_bin_url > machine.zip && \
-    unzip machine.zip && \
-    rm machine.zip && \
-    mv docker-machine* /usr/local/bin
+  curl --progress-bar -L $docker_machine_bin_url > /usr/local/bin/docker-machine
+  chmod +x /usr/local/bin/docker-machine
 
 
   # Install Docker Compose
