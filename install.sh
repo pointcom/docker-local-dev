@@ -2,7 +2,7 @@
 # This Script aims to setup a docker environment for OSX (Maybe Linux) with docker client, docker-machine and docker-compose
 # All binaries are installed in /usr/local/bin/ directory.
 
-DOCKER_VERSION="1.10.0-rc1"
+DOCKER_VERSION="1.10.0-rc2"
 DOCKER_MACHINE_VERSION="0.6.0-rc1"
 DOCKER_COMPOSE_VERSION="1.6.0-rc1"
 
