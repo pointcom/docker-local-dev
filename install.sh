@@ -34,6 +34,7 @@ do_install() {
 
   # Install Docker Compose
   docker_compose_bin_url="https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$os-$arch"
+  echo "\n${GREEN}>> Download Docker compose ($DOCKER_COMPOSE_VERSION)${NC}"
   echo $docker_compose_bin_url
   curl --progress-bar -L $docker_compose_bin_url > /usr/local/bin/docker-compose
   chmod +x /usr/local/bin/docker-compose
