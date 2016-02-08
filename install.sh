@@ -2,9 +2,9 @@
 # This Script aims to setup a docker environment for OSX (Maybe Linux) with docker client, docker-machine and docker-compose
 # All binaries are installed in /usr/local/bin/ directory.
 
-DOCKER_VERSION="1.9.1"
-DOCKER_MACHINE_VERSION="0.5.5"
-#DOCKER_COMPOSE_VERSION="1.5.0rc1"
+DOCKER_VERSION="1.10.0"
+DOCKER_MACHINE_VERSION="0.6.0"
+DOCKER_COMPOSE_VERSION="1.6.0"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -25,7 +25,7 @@ do_install() {
 
 
   # Install Docker machine
-  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine_$(echo $os| tr '[:upper:]' '[:lower:]')-amd64"
+  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-$os-$arch"
   echo "\n${GREEN}>> Download Docker machine ($DOCKER_MACHINE_VERSION)${NC}"
   echo $docker_machine_bin_url
   curl --progress-bar -L $docker_machine_bin_url > /usr/local/bin/docker-machine
@@ -33,19 +33,17 @@ do_install() {
 
 
   # Install Docker Compose
-  docker_compose_bin_url="https://dl.bintray.com/docker-compose/master/docker-compose-$os-$arch"
-  echo "\n${GREEN}>> Download Docker compose (Master)${NC}"
+  docker_compose_bin_url="https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$os-$arch"
+  echo "\n${GREEN}>> Download Docker compose ($DOCKER_COMPOSE_VERSION)${NC}"
   echo $docker_compose_bin_url
   curl --progress-bar -L $docker_compose_bin_url > /usr/local/bin/docker-compose
   chmod +x /usr/local/bin/docker-compose
-
-
 }
 
 do_create_machine() {
   # Create a Docker machine on virtualbox
   echo "\n${GREEN}>> Create a dev machine on virtualbox${NC}"
-  docker-machine create --driver virtualbox dev
+  docker-machine create --driver virtualbox --virtualbox-boot2docker-url https://github.com/tianon/boot2docker-legacy/releases/download/v1.10.0-rc1/boot2docker.iso dev 
 }
 
 do_configure_nfs() {
@@ -79,9 +77,14 @@ EOF)
 
   bootsync=$(echo "$bootsync" | sed -e "s/{{IP}}/$vboxnet_ip/g")
 
+  echo "Bootsync"
+  echo "$bootsync"
+
   docker-machine ssh dev "echo \"$bootsync\" > /tmp/bootsync.sh"
   docker-machine ssh dev "sudo mv /tmp/bootsync.sh /var/lib/boot2docker/bootsync.sh"
-  docker-machine restart dev
+  docker-machine ssh dev "sudo chmod +x /var/lib/boot2docker/bootsync.sh"
+  docker-machine ssh dev "sudo chown root:root /var/lib/boot2docker/bootsync.sh"
+  echo "You need to restart your dev machine with : docker-machine restart dev"
 }
 
 read -p "Do you want to install docker, docker-machine and docker-compose? (y/n)" answer
