@@ -25,7 +25,7 @@ do_install() {
 
 
   # Install Docker machine
-  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine_$(echo $os| tr '[:upper:]' '[:lower:]')-amd64"
+  docker_machine_bin_url="https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-$os-$arch"
   echo "\n${GREEN}>> Download Docker machine ($DOCKER_MACHINE_VERSION)${NC}"
   echo $docker_machine_bin_url
   curl --progress-bar -L $docker_machine_bin_url > /usr/local/bin/docker-machine
